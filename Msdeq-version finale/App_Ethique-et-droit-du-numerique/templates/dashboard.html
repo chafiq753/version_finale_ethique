@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Bonjour, {{ session.username }}</h1>
+    <p class="page-sub">Tableau de bord &mdash; Système IA ENSA Béni Mellal</p>
+  </div>
+  <a href="{{ url_for('ask') }}" class="btn btn-primary">+ Nouvelle demande</a>
+</div>
+
+<!-- Statistiques -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Demandes totales</div>
+    <div class="stat-value">{{ total }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Questions posées</div>
+    <div class="stat-value">{{ questions }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Résumés générés</div>
+    <div class="stat-value">{{ resumes }}</div>
+  </div>
+  <div class="stat-card stat-card-info">
+    <div class="stat-label">Score de conformité</div>
+    <div class="stat-value">90%</div>
+    <div class="stat-sub">Système conforme RGPD</div>
+  </div>
+</div>
+
+<!-- Conformité RGPD -->
+<div class="section-grid">
+  <div class="card">
+    <div class="card-header">
+      <h2>Conformité RGPD</h2>
+    </div>
+    <div class="card-body">
+      <div class="compliance-list">
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Base légale identifiée</span><span class="ci-val">Intérêt légitime</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Droits des personnes</span><span class="ci-val">Garantis</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Mesures de sécurité</span><span class="ci-val">Actives</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>DPO désigné</span><span class="ci-val">Oui</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Journalisation</span><span class="ci-val">Active</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Supervision humaine</span><span class="ci-val">Activée</span></div>
+        <div class="compliance-item ok"><span class="ci-dot"></span><span>Données sensibles</span><span class="ci-val" style="color:#c0392b;">Interdites</span></div>
+        <div class="compliance-item warn"><span class="ci-dot warn"></span><span>Formation utilisateurs</span><span class="ci-val warn">En cours</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Activité récente</h2>
+      <div style="display:flex; align-items:center; gap:.75rem;">
+        <span class="ai-badge">🤖 Propulsé par Groq / Llama 3</span>
+        <a href="{{ url_for('history') }}" class="card-link">Voir tout</a>
+      </div>
+    </div>
+    <div class="card-body">
+      {% if recent %}
+        {% for entry in recent %}
+        <div class="recent-item">
+          <div class="recent-meta">
+            <span class="tag tag-{{ entry.type }}">{{ 'Question' if entry.type == 'question' else 'Résumé' }}</span>
+            <span class="recent-time">{{ entry.timestamp[:16] }}</span>
+          </div>
+          <div class="recent-q">{{ entry.query[:80] }}{% if entry.query|length > 80 %}...{% endif %}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="empty-state">Aucune demande pour le moment. <a href="{{ url_for('ask') }}">Faites votre première demande</a>.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Vos droits -->
+<div class="card" style="margin-top: 1.5rem;">
+  <div class="card-header">
+    <h2>Vos droits RGPD</h2>
+    <a href="{{ url_for('droits') }}" class="card-link">Exercer un droit</a>
+  </div>
+  <div class="card-body">
+    <div class="rights-grid">
+      <div class="right-item">Droit d'accès</div>
+      <div class="right-item">Droit de rectification</div>
+      <div class="right-item">Droit à l'effacement</div>
+      <div class="right-item">Droit d'opposition</div>
+      <div class="right-item">Droit à l'information</div>
+      <div class="right-item">Pas de décision automatisée</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

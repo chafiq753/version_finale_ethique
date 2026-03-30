@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}À propos — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>À propos du système</h1>
+    <p class="page-sub">Fonctionnement, limites et cadre éthique de l'IA</p>
+  </div>
+  <span class="ai-badge" style="font-size:13px; padding:6px 14px;">🤖 IA Groq / Llama 3</span>
+</div>
+
+<!-- Présentation -->
+<div class="card" style="margin-bottom:1.25rem;">
+  <div class="card-header"><h2>Qu'est-ce que ce système ?</h2></div>
+  <div class="card-body">
+    <p class="card-text">
+      Ce système est un <strong>assistant pédagogique basé sur l'intelligence artificielle générative</strong>,
+      conçu pour les étudiants de l'<strong>ENSA Béni Mellal</strong> (École Nationale des Sciences Appliquées,
+      Université Sultan Moulay Slimane). Il est développé dans le cadre du module
+      <em>Éthique et Droit du Numérique</em> de la filière IA &amp; Cybersécurité.
+    </p>
+    <p class="card-text" style="margin-top:.75rem;">
+      Il utilise le modèle <strong>Llama 3 (70B)</strong> via l'API <strong>Groq</strong> pour répondre
+      à des questions pédagogiques et résumer des textes dans les domaines du RGPD, de l'IA, de la
+      cybersécurité et du droit du numérique.
+    </p>
+  </div>
+</div>
+
+<!-- Fonctionnement -->
+<div class="section-grid" style="margin-bottom:1.25rem;">
+  <div class="card">
+    <div class="card-header"><h2>Comment ça fonctionne ?</h2></div>
+    <div class="card-body">
+      <div class="compliance-list">
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>1. Saisie</strong> — L'étudiant pose une question ou soumet un texte</span>
+        </div>
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>2. Filtrage</strong> — Détection et blocage des données sensibles (PII)</span>
+        </div>
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>3. Envoi à l'API Groq</strong> — La requête est transmise au modèle Llama 3</span>
+        </div>
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>4. Génération</strong> — Le modèle produit une réponse en français</span>
+        </div>
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>5. Journalisation</strong> — L'échange est enregistré conformément au RGPD</span>
+        </div>
+        <div class="compliance-item">
+          <span class="ci-dot"></span>
+          <span><strong>6. Affichage</strong> — La réponse est présentée avec un avertissement IA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Modèle utilisé</h2></div>
+    <div class="card-body">
+      <table class="data-table">
+        <tbody>
+          <tr><td><strong>Fournisseur</strong></td><td>Groq Inc.</td></tr>
+          <tr><td><strong>Modèle</strong></td><td>Llama 3.3 — 70B Versatile</td></tr>
+          <tr><td><strong>Développé par</strong></td><td>Meta AI</td></tr>
+          <tr><td><strong>Type</strong></td><td>LLM génératif (Large Language Model)</td></tr>
+          <tr><td><strong>Langue principale</strong></td><td>Français (configuré)</td></tr>
+          <tr><td><strong>Tokens max / réponse</strong></td><td>1 024</td></tr>
+          <tr><td><strong>Données d'entraînement</strong></td><td>Jusqu'à début 2024</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Limites -->
+<div class="card" style="margin-bottom:1.25rem; border-left:4px solid var(--warning);">
+  <div class="card-header" style="background:var(--warning-lt);">
+    <h2 style="color:var(--warning);">⚠️ Limites importantes à connaître</h2>
+  </div>
+  <div class="card-body">
+    <div class="rights-cards" style="grid-template-columns: repeat(3,1fr);">
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);">!</div>
+        <div>
+          <div class="right-card-title">Hallucinations</div>
+          <div class="right-card-desc">Le modèle peut inventer des faits, des lois ou des références qui n'existent pas. Vérifiez toujours les informations critiques.</div>
+        </div>
+      </div>
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);">!</div>
+        <div>
+          <div class="right-card-title">Connaissance limitée</div>
+          <div class="right-card-desc">Le modèle ne connaît pas les événements postérieurs à début 2024. Les lois et règlements récents peuvent ne pas être pris en compte.</div>
+        </div>
+      </div>
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706);">!</div>
+        <div>
+          <div class="right-card-title">Pas d'avis juridique</div>
+          <div class="right-card-desc">Les réponses ne constituent pas un avis juridique officiel. Consultez un juriste ou le DPO pour toute décision importante.</div>
+        </div>
+      </div>
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626);">!</div>
+        <div>
+          <div class="right-card-title">Biais algorithmiques</div>
+          <div class="right-card-desc">Comme tout LLM, le modèle peut reproduire des biais présents dans ses données d'entraînement. L'esprit critique reste indispensable.</div>
+        </div>
+      </div>
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626);">!</div>
+        <div>
+          <div class="right-card-title">Pas de mémoire</div>
+          <div class="right-card-desc">Chaque demande est indépendante. Le système ne se souvient pas des échanges précédents au sein d'une même session.</div>
+        </div>
+      </div>
+
+      <div class="right-card">
+        <div class="right-card-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626);">!</div>
+        <div>
+          <div class="right-card-title">Données envoyées à Groq</div>
+          <div class="right-card-desc">Les questions sont transmises à l'API Groq (serveurs aux États-Unis). Ne saisissez aucune donnée personnelle ou confidentielle.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Cadre éthique & RGPD -->
+<div class="section-grid" style="margin-bottom:1.25rem;">
+  <div class="card">
+    <div class="card-header"><h2>Cadre éthique</h2></div>
+    <div class="card-body">
+      <div class="compliance-list">
+        <div class="compliance-item"><span class="ci-dot"></span><span>Supervision humaine obligatoire</span><span class="ci-val">Activée</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Aucune décision automatisée définitive</span><span class="ci-val">Garanti</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Transparence sur la nature IA</span><span class="ci-val">Affichée</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Signalement des erreurs possible</span><span class="ci-val">Actif</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Filtre données sensibles (PII)</span><span class="ci-val">Actif</span></div>
+        <div class="compliance-item"><span class="ci-dot warn"></span><span>Auditabilité complète</span><span class="ci-val warn">En cours</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>Conformité RGPD</h2></div>
+    <div class="card-body">
+      <div class="compliance-list">
+        <div class="compliance-item"><span class="ci-dot"></span><span>Journalisation des accès (art. 5)</span><span class="ci-val">Active</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Droit d'accès (art. 15)</span><span class="ci-val">Garanti</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Droit à l'effacement (art. 17)</span><span class="ci-val">Garanti</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Droit à la portabilité (art. 20)</span><span class="ci-val">Garanti</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>Pas de décision automatisée (art. 22)</span><span class="ci-val">Garanti</span></div>
+        <div class="compliance-item"><span class="ci-dot"></span><span>DPO désigné</span><span class="ci-val">Oui</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="card">
+  <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <p class="card-text"><strong>Développé par :</strong> Étudiants ENSA Béni Mellal — Filière IA &amp; Cybersécurité — 2024/2025</p>
+<p class="card-text" style="margin-top:.4rem;"><strong>Réclamation RGPD :</strong> <a href="https://www.cndp.ma" target="_blank">CNDP — www.cndp.ma</a></p>
+    </div>
+    <div style="display:flex; gap:.75rem; flex-wrap:wrap;">
+      <a href="{{ url_for('droits') }}" class="btn btn-primary">Mes droits RGPD</a>
+      <a href="{{ url_for('ask') }}" class="btn btn-secondary">Faire une demande</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

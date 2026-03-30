@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Mon profil — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Mon profil</h1>
+    <p class="page-sub">Informations de votre compte</p>
+  </div>
+</div>
+
+<div class="section-grid">
+
+  <!-- Informations du compte -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Informations du compte</h2>
+    </div>
+    <div class="card-body">
+      <div class="compliance-list">
+
+        <div class="compliance-item">
+          <span style="font-weight:bold;color:var(--text-muted);font-size:12px;width:140px;flex-shrink:0;">Nom d'utilisateur</span>
+          <span style="font-size:14px;font-weight:bold;color:var(--primary);">{{ user.username }}</span>
+        </div>
+
+        <div class="compliance-item">
+          <span style="font-weight:bold;color:var(--text-muted);font-size:12px;width:140px;flex-shrink:0;">Adresse email</span>
+          <span style="font-size:13px;">
+            {% if user.email %}
+              {{ user.email }}
+            {% else %}
+              <em style="color:var(--gray);">Non renseignée</em>
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="compliance-item">
+          <span style="font-weight:bold;color:var(--text-muted);font-size:12px;width:140px;flex-shrink:0;">Rôle</span>
+          <span>
+            {% if user.role == 'admin' %}
+              <span class="tag" style="background:#fdecea;color:#c0392b;">Administrateur</span>
+            {% else %}
+              <span class="tag tag-question">Étudiant</span>
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="compliance-item">
+          <span style="font-weight:bold;color:var(--text-muted);font-size:12px;width:140px;flex-shrink:0;">Compte créé le</span>
+          <span style="font-size:13px;">{{ user.created_at[:16] if user.created_at else '—' }}</span>
+        </div>
+
+        <div class="compliance-item">
+          <span style="font-weight:bold;color:var(--text-muted);font-size:12px;width:140px;flex-shrink:0;">Dernière connexion</span>
+          <span style="font-size:13px;">{{ user.last_login[:16] if user.last_login else 'Jamais' }}</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modifier l'email -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Modifier mon adresse email</h2>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('profile') }}">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label for="email">Nouvelle adresse email</label>
+          <input type="email" id="email" name="email"
+                 placeholder="exemple@ensa-bm.ac.ma"
+                 value="{{ user.email or '' }}" required autocomplete="email">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- Notice RGPD -->
+<div class="card" style="margin-top:1.25rem;">
+  <div class="card-body">
+    <p class="card-text">
+      <strong>Information RGPD :</strong> Votre adresse email est utilisée uniquement pour vous contacter
+      en cas d'exercice de vos droits. Elle n'est jamais partagée avec des tiers.
+      Conformément à l'art. 16 du RGPD, vous pouvez la modifier à tout moment ci-dessus.
+      Pour supprimer l'ensemble de vos données, rendez-vous sur
+      <a href="{{ url_for('droits') }}">Mes droits RGPD</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}

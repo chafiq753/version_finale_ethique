@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Effacer mon historique — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Effacer mon historique</h1>
+    <p class="page-sub">Choisissez la période à supprimer</p>
+  </div>
+</div>
+
+<div class="card" style="max-width:540px; margin:0 auto;">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('clear_history') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+      <div style="margin-bottom:1.2rem;">
+        <label style="display:block; font-weight:600; margin-bottom:.4rem;">Supprimer les entrées :</label>
+        <select name="mode" id="modeSelect" style="width:100%; padding:.5rem .75rem; border-radius:6px; border:1px solid #ccc; font-size:1rem;" onchange="toggleDates(this.value)">
+          <option value="all">Tout l'historique</option>
+          <option value="before">Avant une date</option>
+          <option value="after">Après une date</option>
+          <option value="between">Entre deux dates</option>
+        </select>
+      </div>
+
+      <div id="dateFrom" style="display:none; margin-bottom:1rem;">
+        <label style="display:block; font-weight:600; margin-bottom:.4rem;">Date de début :</label>
+        <input type="date" name="date_from" style="width:100%; padding:.5rem .75rem; border-radius:6px; border:1px solid #ccc; font-size:1rem;">
+      </div>
+
+      <div id="dateTo" style="display:none; margin-bottom:1rem;">
+        <label style="display:block; font-weight:600; margin-bottom:.4rem;">Date de fin :</label>
+        <input type="date" name="date_to" style="width:100%; padding:.5rem .75rem; border-radius:6px; border:1px solid #ccc; font-size:1rem;">
+      </div>
+
+      <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+        <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+        <a href="{{ url_for('history') }}" class="btn btn-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card" style="max-width:540px; margin:1rem auto 0;">
+  <div class="card-body">
+    <p class="card-text">
+      <strong>Information RGPD :</strong> Conformément à l'article 17 du RGPD, vous avez le droit
+      à l'effacement de vos données personnelles. Cette action est irréversible.
+    </p>
+  </div>
+</div>
+
+<script>
+function toggleDates(mode) {
+  document.getElementById('dateFrom').style.display = (mode === 'after' || mode === 'between') ? 'block' : 'none';
+  document.getElementById('dateTo').style.display = (mode === 'before' || mode === 'between') ? 'block' : 'none';
+}
+</script>
+{% endblock %}

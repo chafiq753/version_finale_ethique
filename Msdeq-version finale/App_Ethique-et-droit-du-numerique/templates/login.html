@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Connexion — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <div class="auth-logo">IA</div>
+      <h1>Système IA</h1>
+      <p>ENSA Béni Mellal &mdash; Accès réservé aux membres de l'établissement</p>
+    </div>
+
+    <div class="rgpd-notice">
+      <strong>Notice RGPD :</strong> Ce système collecte uniquement vos identifiants de connexion
+      et journalise vos interactions à des fins de conformité. Aucune donnée sensible ne doit être saisie.
+      Conformément au RGPD, vous disposez des droits d'accès, de rectification et d'effacement.
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" placeholder="Votre identifiant" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Votre mot de passe" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Se connecter</button>
+    </form>
+
+    <p class="auth-link">Pas encore de compte ? <a href="{{ url_for('register') }}">Créer un compte</a></p>
+
+    <div class="demo-box">
+      <p><strong>Compte démo :</strong> identifiant <code>demo</code> &mdash; mot de passe <code>demo1234</code></p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

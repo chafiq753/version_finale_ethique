@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Mes droits RGPD — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Mes droits RGPD</h1>
+    <p class="page-sub">Exercez vos droits conformément au Règlement Général sur la Protection des Données</p>
+  </div>
+</div>
+
+<!-- Présentation des droits -->
+<div class="rights-cards">
+  <div class="right-card">
+    <div class="right-card-icon">A</div>
+    <div>
+      <div class="right-card-title">Droit d'accès (art. 15)</div>
+      <div class="right-card-desc">Obtenez une copie de toutes les données vous concernant traitées par ce système.</div>
+      <a href="{{ url_for('mes_donnees') }}" class="btn btn-primary" style="margin-top:.75rem; display:inline-block; font-size:.85rem;">Accéder à mes données</a>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="right-card-icon">R</div>
+    <div>
+      <div class="right-card-title">Droit de rectification (art. 16)</div>
+      <div class="right-card-desc">Demandez la correction de données inexactes ou incomplètes vous concernant.</div>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="right-card-icon">E</div>
+    <div>
+      <div class="right-card-title">Droit à l'effacement (art. 17)</div>
+      <div class="right-card-desc">Demandez la suppression de vos données. Vous pouvez aussi effacer votre historique directement.</div>
+      <a href="{{ url_for('history') }}" class="btn btn-danger" style="margin-top:.75rem; display:inline-block; font-size:.85rem;">Effacer mon historique</a>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="right-card-icon">O</div>
+    <div>
+      <div class="right-card-title">Droit d'opposition (art. 21)</div>
+      <div class="right-card-desc">Opposez-vous au traitement de vos données pour des raisons légitimes.</div>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="right-card-icon">P</div>
+    <div>
+      <div class="right-card-title">Droit à la portabilité (art. 20)</div>
+      <div class="right-card-desc">Recevez vos données dans un format structuré et lisible par machine (JSON).</div>
+      <a href="{{ url_for('export_data') }}" class="btn btn-primary" style="margin-top:.75rem; display:inline-block; font-size:.85rem;">Télécharger mes données (JSON)</a>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="right-card-icon">D</div>
+    <div>
+      <div class="right-card-title">Pas de décision automatisée (art. 22)</div>
+      <div class="right-card-desc">Ce système ne prend aucune décision définitive vous concernant sans validation humaine.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Formulaire d'exercice de droits -->
+<div class="card" style="margin-top:1.5rem;">
+  <div class="card-header"><h2>Exercer un droit</h2></div>
+  <div class="card-body">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('droits') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="droit">Droit à exercer</label>
+        <select name="droit" id="droit" required>
+          <option value="">-- Sélectionnez un droit --</option>
+          <option value="acces">Droit d'accès — obtenir mes données</option>
+          <option value="rectification">Droit de rectification — corriger mes données</option>
+          <option value="effacement">Droit à l'effacement — supprimer mes données</option>
+          <option value="opposition">Droit d'opposition — m'opposer au traitement</option>
+          <option value="portabilite">Droit à la portabilité — exporter mes données</option>
+          <option value="limitation">Droit à la limitation du traitement</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Précisions (optionnel)</label>
+        <textarea name="message" id="message" rows="4"
+          placeholder="Décrivez votre demande avec précision..." maxlength="500">Demande d'exercice de mes droits RGPD.</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+    </form>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="card" style="margin-top:1rem;">
+  <div class="card-body">
+    <p class="card-text">Toute demande sera traitée dans un délai d'un mois conformément à l'article 12 du RGPD.</p>
+    <p class="card-text" style="margin-top:0.5rem;">
+      En cas de non-réponse, vous pouvez saisir la <strong>CNDP</strong> (Commission Nationale de contrôle
+      de la Protection des Données à caractère Personnel) — <strong>www.cndp.ma</strong>
+    </p>
+  </div>
+</div>
+{% endblock %}

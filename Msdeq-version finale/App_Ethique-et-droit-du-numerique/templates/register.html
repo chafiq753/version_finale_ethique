@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Inscription — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <div class="auth-logo">IA</div>
+      <h1>Créer un compte</h1>
+      <p>Réservé aux étudiants et au personnel de l'ENSA Béni Mellal</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" placeholder="Minimum 3 caractères" required minlength="3">
+      </div>
+      <div class="form-group">
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" name="email" placeholder="exemple@ensa-bm.ac.ma" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" placeholder="Minimum 6 caractères" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input type="password" id="confirm" name="confirm" placeholder="Répétez votre mot de passe" required>
+      </div>
+
+      <div class="rgpd-notice" style="margin-bottom: 1rem;">
+        En créant un compte, vous acceptez que vos interactions soient journalisées à des fins de conformité RGPD.
+        Vous pouvez exercer vos droits à tout moment via la section « Mes droits RGPD ».
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Créer mon compte</button>
+    </form>
+
+    <p class="auth-link">Déjà un compte ? <a href="{{ url_for('login') }}">Se connecter</a></p>
+
+  </div>
+</div>
+{% endblock %}

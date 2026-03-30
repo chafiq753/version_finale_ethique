@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle demande — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Nouvelle demande</h1>
+    <p class="page-sub">Posez une question ou soumettez un texte à résumer</p>
+  </div>
+</div>
+
+<div class="ask-grid">
+  <!-- Formulaire principal -->
+  <div class="card">
+    <div class="card-header"><h2>Votre demande</h2></div>
+    <div class="card-body">
+
+      <div class="alert alert-warning" style="margin-bottom:1rem;">
+        <div><strong>🔒 Filtre de données sensibles actif</strong></div>
+        <div style="margin-top:.35rem; line-height:1.7;">
+          Les éléments suivants sont <strong>automatiquement bloqués</strong> :
+          email · mot de passe · CIN · numéro de téléphone · carte bancaire · IBAN · adresse postale · date de naissance.
+          <br>Toute demande contenant ces données sera rejetée avant envoi à l'IA.
+        </div>
+      </div>
+
+      <form method="POST" action="{{ url_for('ask') }}" id="ask-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Choix du mode -->
+        <div class="form-group">
+          <label>Type de demande</label>
+          <div class="mode-selector">
+            <label class="mode-option {% if mode == 'question' %}active{% endif %}" id="label-question">
+              <input type="radio" name="mode" value="question" {% if mode == 'question' %}checked{% endif %} onchange="setMode(this)">
+              <span class="mode-icon">?</span>
+              <span>Question / Assistance</span>
+            </label>
+            <label class="mode-option {% if mode == 'resume' %}active{% endif %}" id="label-resume">
+              <input type="radio" name="mode" value="resume" {% if mode == 'resume' %}checked{% endif %} onchange="setMode(this)">
+              <span class="mode-icon">≡</span>
+              <span>Résumé de texte</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="query" id="query-label">
+            {% if mode == 'resume' %}Texte à résumer{% else %}Votre question{% endif %}
+          </label>
+          <textarea name="query" id="query" rows="6"
+            placeholder="{% if mode == 'resume' %}Collez ici le texte que vous souhaitez résumer...{% else %}Posez votre question sur le RGPD, l'IA, la cybersécurité, Python, Flask...{% endif %}"
+            maxlength="2000" oninput="updateCounter()" required>{{ query if query else '' }}</textarea>
+          <div class="textarea-footer">
+            <div id="pii-warning" class="pii-warning" style="display:none;">
+              🚫 Données sensibles détectées — supprimez tout identifiant personnel avant de soumettre.
+            </div>
+            <span id="char-count" class="char-count">0 / 2000</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submit-btn">Envoyer la demande</button>
+          <button type="reset" class="btn btn-secondary" onclick="resetForm()">Effacer</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Panneau latéral -->
+  <div>
+    <!-- Réponse -->
+    {% if response %}
+    <div class="card response-card">
+      <div class="card-header">
+        <h2>Réponse générée</h2>
+        <div style="display:flex; align-items:center; gap:.5rem;">
+          <span class="ai-badge">🤖 IA Groq</span>
+          <span class="tag tag-{{ mode }}">{{ 'Résumé' if mode == 'resume' else 'Question' }}</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="response-text">{{ response }}</div>
+        <div class="response-disclaimer">
+          Réponse générée automatiquement &mdash; vérification humaine recommandée pour toute décision importante.
+        </div>
+        <!-- Bouton signalement -->
+        <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:1rem;">
+          <button onclick="document.getElementById('signalement-form').style.display='block'; this.style.display='none';"
+                  class="btn btn-secondary btn-sm" style="color:var(--danger); border-color:var(--danger);">
+            ⚑ Signaler une réponse incorrecte
+          </button>
+          <div id="signalement-form" style="display:none; margin-top:1rem;">
+            <form method="POST" action="{{ url_for('signaler') }}">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="history_id" value="{{ history_id }}">
+              <input type="hidden" name="query" value="{{ query | e }}">
+              <input type="hidden" name="response" value="{{ response | e }}">
+              <div class="form-group">
+                <label>Raison du signalement</label>
+                <select name="raison" required>
+                  <option value="">-- Sélectionnez --</option>
+                  <option value="information_incorrecte">Information incorrecte ou fausse</option>
+                  <option value="reponse_incomplete">Réponse incomplète</option>
+                  <option value="hors_sujet">Réponse hors sujet</option>
+                  <option value="contenu_inapproprie">Contenu inapproprié</option>
+                  <option value="erreur_rgpd">Erreur liée au RGPD</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Commentaire (optionnel)</label>
+                <textarea name="commentaire" rows="2" maxlength="500"
+                  placeholder="Précisez ce qui est incorrect..."></textarea>
+              </div>
+              <div style="display:flex; gap:.75rem;">
+                <button type="submit" class="btn btn-danger btn-sm">Envoyer le signalement</button>
+                <button type="button" class="btn btn-secondary btn-sm"
+                  onclick="document.getElementById('signalement-form').style.display='none';">Annuler</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Thèmes disponibles -->
+    <div class="card">
+      <div class="card-header"><h2>Thèmes disponibles</h2></div>
+      <div class="card-body">
+        <div class="topics-grid">
+          <span class="topic-tag">RGPD</span>
+          <span class="topic-tag">Intelligence artificielle</span>
+          <span class="topic-tag">Cybersécurité</span>
+          <span class="topic-tag">Machine learning</span>
+          <span class="topic-tag">Deep learning</span>
+          <span class="topic-tag">Python</span>
+          <span class="topic-tag">Flask</span>
+          <span class="topic-tag">SQLite</span>
+          <span class="topic-tag">Réseaux de neurones</span>
+          <span class="topic-tag">Biais algorithmiques</span>
+          <span class="topic-tag">Données personnelles</span>
+          <span class="topic-tag">Éthique IA</span>
+          <span class="topic-tag">DPO / AIPD</span>
+          <span class="topic-tag">Chiffrement</span>
+          <span class="topic-tag">Authentification</span>
+          <span class="topic-tag">ENSA Béni Mellal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>Supervision humaine</h2></div>
+      <div class="card-body">
+        <p class="card-text">
+          Toute décision importante doit être validée par un enseignant ou un responsable.
+          Ce système ne peut pas prendre de décision définitive de manière autonome.
+        </p>
+        <p class="card-text" style="margin-top:0.5rem;">
+          En cas de réponse incorrecte, utilisez le bouton de contestation ou contactez le responsable du système.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

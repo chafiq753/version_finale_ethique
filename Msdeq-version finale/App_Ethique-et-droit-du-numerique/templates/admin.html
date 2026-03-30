@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Signalements — Administration ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Tableau de bord Admin</h1>
+    <p class="page-sub">Signalements soumis par les utilisateurs</p>
+  </div>
+</div>
+
+<!-- Statistiques signalements -->
+<div class="stats-grid" style="grid-template-columns: repeat(3,1fr); margin-bottom:1.5rem;">
+  <div class="stat-card" style="border-top:3px solid var(--danger);">
+    <div class="stat-label">En attente</div>
+    <div class="stat-value" style="color:var(--danger);">{{ total_signalements }}</div>
+  </div>
+  <div class="stat-card" style="border-top:3px solid #27ae60;">
+    <div class="stat-label">Traités</div>
+    <div class="stat-value" style="color:#27ae60;">{{ total_traites }}</div>
+  </div>
+  <div class="stat-card stat-card-info">
+    <div class="stat-label">Total signalements</div>
+    <div class="stat-value">{{ total_signalements + total_traites }}</div>
+  </div>
+</div>
+
+<!-- Liste des signalements -->
+<div class="card">
+  <div class="card-header">
+    <h2>Signalements</h2>
+    {% if total_signalements > 0 %}
+    <span class="tag" style="background:var(--danger-lt);color:var(--danger);">{{ total_signalements }} en attente</span>
+    {% else %}
+    <span class="tag tag-question">Tout est traité</span>
+    {% endif %}
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if signalements %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Utilisateur</th>
+          <th>Raison</th>
+          <th>Question signalée</th>
+          <th>Commentaire</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in signalements %}
+        <tr {% if s.statut == 'en_attente' %}style="background:#fffbf0;"{% endif %}>
+          <td class="td-num">{{ s.id }}</td>
+          <td><strong>{{ s.username or '—' }}</strong></td>
+          <td>
+            <span class="tag" style="background:var(--danger-lt);color:var(--danger);white-space:nowrap;">
+              {{ s.raison | replace('_', ' ') | title }}
+            </span>
+          </td>
+          <td class="td-text">
+            <span class="text-truncate" title="{{ s.query }}">{{ s.query[:80] }}{% if s.query|length > 80 %}...{% endif %}</span>
+          </td>
+          <td class="td-text">
+            <span class="text-truncate" title="{{ s.commentaire }}">{{ s.commentaire[:60] if s.commentaire else '—' }}</span>
+          </td>
+          <td>
+            {% if s.statut == 'en_attente' %}
+              <span class="tag" style="background:var(--warning-lt);color:var(--warning);">En attente</span>
+            {% else %}
+              <span class="tag tag-question">Traité</span>
+            {% endif %}
+          </td>
+          <td class="td-date">{{ s.timestamp[:16] }}</td>
+          <td>
+            {% if s.statut == 'en_attente' %}
+            <form method="POST" action="{{ url_for('admin_traiter_signalement', sig_id=s.id) }}" style="display:inline;">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm" style="background:#27ae60;color:#fff;">✓ Traiter</button>
+            </form>
+            {% else %}
+              <span style="font-size:12px;color:var(--gray);">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-block">Aucun signalement pour le moment.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

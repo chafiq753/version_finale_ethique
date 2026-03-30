@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Historique — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Historique des demandes</h1>
+    <p class="page-sub">{{ total }} demande(s) enregistrée(s)</p>
+  </div>
+  {% if entries %}
+  <a href="{{ url_for('clear_history_form') }}" class="btn btn-danger">Effacer mon historique</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding: 0;">
+    {% if entries %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Type</th>
+          <th>Demande</th>
+          <th>Réponse</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+        <tr>
+          <td class="td-num">{{ entry.id }}</td>
+          <td><span class="tag tag-{{ entry.type }}">{{ 'Résumé' if entry.type == 'resume' else 'Question' }}</span></td>
+          <td class="td-text">
+            <span class="text-truncate" title="{{ entry.query }}">{{ entry.query[:60] }}{% if entry.query|length > 60 %}...{% endif %}</span>
+          </td>
+          <td class="td-text">
+            <span class="text-truncate" title="{{ entry.response }}">{{ entry.response[:60] }}{% if entry.response|length > 60 %}...{% endif %}</span>
+          </td>
+          <td class="td-date">{{ entry.timestamp[:16] }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('delete_entry', entry_id=entry.id) }}" style="display:inline;">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn-icon" title="Supprimer" onclick="return confirm('Supprimer cette entrée ?')">✕</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+      {% if page > 1 %}
+        <a href="{{ url_for('history', page=page-1) }}" class="btn btn-secondary btn-sm">← Précédent</a>
+      {% endif %}
+      <span class="page-info">Page {{ page }} / {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="{{ url_for('history', page=page+1) }}" class="btn btn-secondary btn-sm">Suivant →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-block">
+      <p>Aucune demande dans votre historique.</p>
+      <a href="{{ url_for('ask') }}" class="btn btn-primary" style="margin-top:1rem;">Faire une demande</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <div class="card-body">
+    <p class="card-text">
+      <strong>Information RGPD :</strong> Conformément à l'article 17 du RGPD, vous pouvez demander l'effacement
+      de vos données à tout moment. Cliquez sur « Effacer tout » pour exercer votre droit à l'effacement,
+      ou supprimez des entrées individuellement. Vous pouvez également exercer vos droits via
+      <a href="{{ url_for('droits') }}">la page dédiée</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}

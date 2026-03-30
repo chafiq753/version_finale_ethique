@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Historique supprimé — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div style="max-width:540px; margin:4rem auto; text-align:center;">
+  <div class="card">
+    <div class="card-body" style="padding:2.5rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">🗑️</div>
+      <h1 style="margin-bottom:.5rem;">Historique supprimé</h1>
+      <p style="color:#555; margin-bottom:1.5rem;">{{ message }}</p>
+
+      <div style="background:#f8f9fa; border-radius:8px; padding:1rem; margin-bottom:1.5rem; text-align:left;">
+        <strong>Récapitulatif :</strong>
+        <ul style="margin:.5rem 0 0 1.2rem; padding:0;">
+          <li>{{ deleted }} entrée(s) supprimée(s)</li>
+          {% if date_from %}<li>À partir du : {{ date_from }}</li>{% endif %}
+          {% if date_to %}<li>Jusqu'au : {{ date_to }}</li>{% endif %}
+          <li>Suppression effectuée le : {{ now }}</li>
+        </ul>
+      </div>
+
+      <p style="font-size:.85rem; color:#888; margin-bottom:1.5rem;">
+        Conformément à l'article 17 du RGPD — droit à l'effacement exercé.
+      </p>
+
+      <a href="{{ url_for('history') }}" class="btn btn-primary">Retour à l'historique</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

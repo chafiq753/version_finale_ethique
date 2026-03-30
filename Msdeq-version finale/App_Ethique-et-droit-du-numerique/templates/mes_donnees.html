@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Mes données — Système IA ENSA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Accéder à mes données</h1>
+    <p class="page-sub">Droit d'accès — Article 15 du RGPD</p>
+  </div>
+  <a href="{{ url_for('export_data') }}" class="btn btn-primary">Télécharger (JSON)</a>
+</div>
+
+<!-- Profil -->
+<div class="card" style="margin-bottom:1rem;">
+  <div class="card-header"><h2>Informations du compte</h2></div>
+  <div class="card-body">
+    <table class="data-table">
+      <tbody>
+        <tr><td><strong>Identifiant</strong></td><td>{{ user.id }}</td></tr>
+        <tr><td><strong>Nom d'utilisateur</strong></td><td>{{ user.username }}</td></tr>
+        <tr><td><strong>Rôle</strong></td><td>{{ user.role }}</td></tr>
+        <tr><td><strong>Compte créé le</strong></td><td>{{ user.created_at[:16] if user.created_at else '—' }}</td></tr>
+        <tr><td><strong>Dernière connexion</strong></td><td>{{ user.last_login[:16] if user.last_login else '—' }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Historique -->
+<div class="card" style="margin-bottom:1rem;">
+  <div class="card-header">
+    <h2>Historique des demandes ({{ history|length }} entrée(s))</h2>
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if history %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Demande</th>
+          <th>Réponse</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for h in history %}
+        <tr>
+          <td><span class="tag tag-{{ h.type }}">{{ 'Résumé' if h.type == 'resume' else 'Question' }}</span></td>
+          <td class="td-text"><span class="text-truncate" title="{{ h.query }}">{{ h.query[:80] }}{% if h.query|length > 80 %}...{% endif %}</span></td>
+          <td class="td-text"><span class="text-truncate" title="{{ h.response }}">{{ h.response[:80] }}{% if h.response|length > 80 %}...{% endif %}</span></td>
+          <td class="td-date">{{ h.timestamp[:16] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-block"><p>Aucune donnée dans votre historique.</p></div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Info RGPD -->
+<div class="card">
+  <div class="card-body">
+    <p class="card-text">
+      <strong>Article 15 du RGPD :</strong> Vous avez le droit d'obtenir la confirmation que des données vous
+      concernant sont traitées, ainsi qu'une copie de ces données. Ces informations ont été générées le
+      <strong>{{ now }}</strong>.
+    </p>
+    <div style="display:flex; gap:1rem; margin-top:1rem; flex-wrap:wrap;">
+      <a href="{{ url_for('history') }}" class="btn btn-secondary">Voir l'historique complet</a>
+      <a href="{{ url_for('clear_history_form') }}" class="btn btn-danger">Effacer mon historique</a>
+      <a href="{{ url_for('droits') }}" class="btn btn-secondary">Mes droits RGPD</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

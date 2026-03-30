@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Vérification 2FA — Administration ENSA{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card" style="max-width:400px;">
+
+    <div class="auth-header">
+      <div class="auth-logo" style="font-size:1.6rem;">2FA</div>
+      <h1>Vérification</h1>
+      <p>Entrez le code de votre application d'authentification</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin_2fa_verify') }}" class="auth-form">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="code">Code à 6 chiffres</label>
+        <input type="text" id="code" name="code" placeholder="123456"
+               pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code"
+               autofocus style="letter-spacing:6px;font-size:1.5rem;text-align:center;">
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Vérifier</button>
+    </form>
+
+    <p style="text-align:center;margin-top:1rem;font-size:13px;color:#888;">
+      Compte : <strong>{{ username }}</strong> &mdash;
+      <a href="{{ url_for('login') }}" style="color:#888;">Retour à la connexion</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}
